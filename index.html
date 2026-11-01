@@ -1,186 +1,36 @@
-
-<!DOCTYPE html>
+7<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Nsukka Technical College</title>
-
-<style>
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f4f5f8;
-}
-
-/* Main Header */
-header {
-  background: #101c35;
-  color: white;
-  padding: 20px 0 12px;
-}
-
-/* School Name */
-.school-name {
-  text-align: center;
-  padding: 0 10px 18px;
-}
-
-.school-name h2 {
-  margin: 0 0 7px;
-  font-size: 18px;
-  color: white;
-}
-
-.school-name h1 {
-  margin: 0;
-  font-size: 21px;
-  color: #e8bd53;
-}
-
-/* Horizontal Navigation */
-.navigation {
-  display: flex;
-  gap: 9px;
-  overflow-x: auto;
-  white-space: nowrap;
-  padding: 10px 12px;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-}
-
-.navigation::-webkit-scrollbar {
-  display: none;
-}
-
-/* Navigation Buttons */
-.navigation a {
-  flex: 0 0 auto;
-  text-decoration: none;
-  color: white;
-  background: #263957;
-  padding: 11px 17px;
-  border-radius: 7px;
-  font-size: 13px;
-  font-weight: bold;
-  transition: 0.3s;
-}
-
-.navigation a:hover,
-.navigation a.active {
-  background: #e8bd53;
-  color: #101c35;
-}
-
-/* Page Content */
-main {
-  padding: 25px 15px;
-  text-align: center;
-}
-</style>
+  <meta charset="UTF-8">
+  <title>N.T.C Org</title>
+  <style>  .header 
+  { 
+  color: yellow;
+  background-color: navy;
+  padding: 3px;
+  text-align: center; 
+  font-size: 30px;
+  margin:0px;  
+  }  
+  
+  
+    .buttons { color: white;   
+    background-color:green; 
+    space-between:3px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;  }
+    
+  
+  
+  </style>
+  
 </head>
-
-<body>
-
-<header>
-
-  <div class="school-name">
-    <h2>Welcome To</h2>
-    <h1>Nsukka Technical College</h1>
-  </div>
-
-  <nav class="navigation">
-
-    <a href="#home" class="active">Home</a>
-
-    <a href="#about">About Us</a>
-
-    <a href="#courses">Courses</a>
-
-    <a href="#admission">Admission</a>
-
-    <a href="#staff">Staff</a>
-
-    <a href="#students">Students</a>
-
-    <a href="#gallery">Gallery</a>
-
-    <a href="#news">News</a>
-
-    <a href="#events">Events</a>
-
-    <a href="#contact">Contact Us</a>
-
-  </nav>
-
-</header>
-
-<main>
-
-  <section id="home">
-    <h2>Welcome to Our School</h2>
-    <p>Building skills, knowledge and a brighter future.</p>
-  </section>
-
-  <section id="about">
-    <h2>About Us</h2>
-    <p>Learn about our school.</p>
-  </section>
-
-  <section id="courses">
-    <h2>Our Courses</h2>
-  </section>
-
-  <section id="admission">
-    <h2>Admission</h2>
-  </section>
-
-  <section id="staff">
-    <h2>Our Staff</h2>
-  </section>
-
-  <section id="students">
-    <h2>Students</h2>
-  </section>
-
-  <section id="gallery">
-    <h2>School Gallery</h2>
-  </section>
-
-  <section id="news">
-    <h2>Latest News</h2>
-  </section>
-
-  <section id="events">
-    <h2>School Events</h2>
-  </section>
-
-  <section id="contact">
-    <h2>Contact Us</h2>
-  </section>
-
-</main>
-
-<script>
-const links = document.querySelectorAll(".navigation a");
-
-links.forEach(link => {
-  link.addEventListener("click", function() {
-
-    links.forEach(item =>
-      item.classList.remove("active")
-    );
-
-    this.classList.add("active");
-
-  });
-});
-</script>
-
+<body>  <div class="header"> Welcome To <br/> Nsukka Technical <br/>  College </div>
+<nav class="buttons"><button>Contact </button>
+<button> About </button>
+<button> Courses </button>
+<button>make payment </button></nav>
+  
 </body>
 </html>
