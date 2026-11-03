@@ -1,31 +1,425 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
-  <title>N.T.C Org</title>
-  <style>  .header 
-  { 
-  color: yellow;
-  background-color: navy;
-  padding: 3px;
-  text-align: center; 
-  font-size: 30px;
-  margin:0px;  padding:1px;
-  }  
-  
-  
-   
-    
-  
-  
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Nsukka Technical College</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #06085C;
+      font-family: Arial, sans-serif;
+      color: white;
+      padding: 10px;
+    }
+
+    /* SCHOOL HEADER */
+
+    .head {
+      color: #00C8FF;
+      background: linear-gradient(135deg, #000033, #000099);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 12px;
+      border: 2px solid #00FFFF;
+      box-shadow: 0 0 15px #00FFFF;
+      border-radius: 15px;
+      text-align: center;
+    }
+
+    .head h1 {
+      font-size: 35px;
+    }
+
+    .head h2 {
+      font-size: 22px;
+    }
+
+    /* HORIZONTAL NAVIGATION */
+
+    .buttons {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      white-space: nowrap;
+      gap: 10px;
+      padding: 15px 5px;
+      margin-top: 15px;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .buttons button {
+      flex-shrink: 0;
+      background: linear-gradient(135deg, #00FFFF, #00AEEF);
+      color: #001044;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 25px;
+      padding: 12px 20px;
+      border: 1px solid white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .buttons button:hover {
+      background: gold;
+      color: navy;
+      box-shadow: 0 0 15px yellow;
+      transform: translateY(-3px);
+    }
+
+    .buttons::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .buttons::-webkit-scrollbar-thumb {
+      background: cyan;
+      border-radius: 10px;
+    }
+
+    /* HERO SECTION */
+
+    .head2 {
+      background:
+        linear-gradient(rgba(0, 0, 50, 0.65),
+        rgba(0, 0, 80, 0.75)),
+        url("https://jetbits.com/channel/pics/VitalStarRex/s/aPy233U7uEVuYHhxrd0b.jpg");
+
+      background-size: cover;
+      background-position: center;
+
+      border: 1px solid #00FFFF;
+      border-radius: 20px;
+      padding: 60px 20px;
+      margin-top: 15px;
+      text-align: center;
+      box-shadow: 0 0 15px #001AFF;
+    }
+
+    .head2 h3 {
+      color: #00FFFF;
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+
+    .head2 h1 {
+      color: white;
+      font-size: 30px;
+      margin-bottom: 15px;
+      text-shadow: 0 0 10px cyan;
+    }
+
+    .head2 p {
+      color: #E0E0FF;
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .hero-btn {
+      display: inline-block;
+      background: gold;
+      color: navy;
+      text-decoration: none;
+      padding: 12px 25px;
+      border-radius: 25px;
+      font-weight: bold;
+      margin-top: 20px;
+      transition: 0.3s;
+    }
+
+    .hero-btn:hover {
+      background: white;
+      box-shadow: 0 0 15px gold;
+    }
+
+    /* WELCOME MESSAGE */
+
+    .welcome {
+      text-align: center;
+      margin: 30px 10px;
+    }
+
+    .welcome h2 {
+      color: #00FFFF;
+      font-size: 25px;
+      margin-bottom: 15px;
+    }
+
+    .welcome p {
+      color: #D6D6FF;
+      font-size: 16px;
+      line-height: 1.8;
+    }
+
+    /* SCHOOL FEATURES */
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-top: 25px;
+    }
+
+    .card {
+      background: linear-gradient(145deg, #101080, #080830);
+      border: 1px solid #00FFFF;
+      border-radius: 15px;
+      padding: 20px 10px;
+      text-align: center;
+      box-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
+      transition: 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 15px cyan;
+    }
+
+    .card .icon {
+      font-size: 35px;
+      margin-bottom: 12px;
+    }
+
+    .card h3 {
+      color: #00FFFF;
+      font-size: 17px;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      color: #CCCCFF;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    /* ANNOUNCEMENTS */
+
+    .announcement {
+      background: linear-gradient(135deg, #001A50, #000033);
+      border-left: 5px solid gold;
+      padding: 20px;
+      margin-top: 25px;
+      border-radius: 12px;
+    }
+
+    .announcement h2 {
+      color: gold;
+      font-size: 20px;
+      margin-bottom: 12px;
+    }
+
+    .announcement p {
+      color: white;
+      line-height: 1.8;
+      font-size: 15px;
+    }
+
+    /* CALL TO ACTION */
+
+    .cta {
+      text-align: center;
+      padding: 30px 15px;
+      margin-top: 25px;
+      background: linear-gradient(135deg, #000080, #101050);
+      border: 1px solid cyan;
+      border-radius: 20px;
+    }
+
+    .cta h2 {
+      color: #00FFFF;
+      margin-bottom: 15px;
+    }
+
+    .cta p {
+      color: #DDDDFF;
+      line-height: 1.7;
+    }
+
+    .cta a {
+      display: inline-block;
+      background: #00FFFF;
+      color: navy;
+      padding: 12px 25px;
+      margin-top: 20px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    /* FOOTER */
+
+    footer {
+      text-align: center;
+      background: #000033;
+      padding: 25px 10px;
+      margin-top: 30px;
+      border-top: 2px solid cyan;
+      border-radius: 10px;
+    }
+
+    footer h3 {
+      color: #00FFFF;
+      margin-bottom: 10px;
+    }
+
+    footer p {
+      color: #BBBBFF;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    footer .copyright {
+      margin-top: 15px;
+      color: gray;
+    }
+
+    /* MOBILE RESPONSIVENESS */
+
+    @media (max-width: 480px) {
+      .head h2 {
+        font-size: 18px;
+      }
+
+      .head2 h1 {
+        font-size: 25px;
+      }
+
+      .features {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
   </style>
-  
 </head>
-<body>  <div class="header"> Welcome To <br/> Nsukka Technical <br/>  College </div>
-<nav class="buttons"><button>Contact </button>
-<button> About </button>
-<button> Courses </button>
-<button>make payment </button></nav>
-  
+
+<body>
+
+  <!-- HEADER -->
+
+  <div class="head">
+    <h1>⚒️</h1>
+    <h2>Nsukka Technical College</h2>
+  </div>
+
+  <!-- NAVIGATION -->
+
+  <div class="buttons">
+    <button>🏠 Home</button>
+    <button>🏫 About School</button>
+    <button>📚 Subjects</button>
+    <button>🎓 Courses</button>
+    <button>🖼️ Gallery</button>
+    <button>💳 Make Payment</button>
+    <button>📞 Contact</button>
+  </div>
+
+  <!-- HERO SECTION -->
+
+  <div class="head2">
+    <h3>WELCOME TO N.T.C</h3>
+
+    <h1>Excellence In Diversity</h1>
+
+    <p>
+      Building future leaders through technical education,
+      innovation, creativity and excellence.
+    </p>
+
+    <a href="#" class="hero-btn">Explore Our School</a>
+  </div>
+
+  <!-- WELCOME SECTION -->
+
+  <div class="welcome">
+    <h2>Welcome to Our School</h2>
+
+    <p>
+      Nsukka Technical College is committed to providing
+      quality education, practical skills and technical
+      knowledge to prepare students for a brighter future.
+    </p>
+  </div>
+
+  <!-- SCHOOL FEATURES -->
+
+  <div class="features">
+
+    <div class="card">
+      <div class="icon">🎓</div>
+      <h3>Quality Education</h3>
+      <p>Providing excellent teaching and learning experiences.</p>
+    </div>
+
+    <div class="card">
+      <div class="icon">⚙️</div>
+      <h3>Technical Skills</h3>
+      <p>Developing practical skills for the modern world.</p>
+    </div>
+
+    <div class="card">
+      <div class="icon">🔬</div>
+      <h3>Innovation</h3>
+      <p>Encouraging creativity, discovery and technology.</p>
+    </div>
+
+    <div class="card">
+      <div class="icon">🌟</div>
+      <h3>Excellence</h3>
+      <p>Inspiring students to achieve their full potential.</p>
+    </div>
+
+  </div>
+
+  <!-- ANNOUNCEMENTS -->
+
+  <div class="announcement">
+    <h2>📢 School Announcements</h2>
+
+    <p>
+      Welcome to Nsukka Technical College!
+      Stay connected with us for important information,
+      academic updates, school activities and announcements.
+    </p>
+  </div>
+
+  <!-- CALL TO ACTION -->
+
+  <div class="cta">
+    <h2>Build Your Future With Us</h2>
+
+    <p>
+      Discover opportunities, develop your talents
+      and become part of a community dedicated to learning
+      and excellence.
+    </p>
+
+    <a href="#">Learn More</a>
+  </div>
+
+  <!-- FOOTER -->
+
+  <footer>
+    <h3>⚒️ Nsukka Technical College</h3>
+
+    <p>Excellence In Diversity</p>
+
+    <p>Education • Innovation • Skills • Excellence</p>
+
+    <p class="copyright">
+      &copy; 2026 Nsukka Technical College.
+      All Rights Reserved.
+    </p>
+  </footer>
+
 </body>
 </html>
