@@ -1,442 +1,91 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VitalStar Student Registration</title>
-
-<style>
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  padding: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: Arial, sans-serif;
-  color: white;
-  background: linear-gradient(135deg,#080020,#19004d,#00334d);
-}
-
-.box {
-  width: 100%;
-  max-width: 390px;
-  padding: 28px 23px;
-  border: 1px solid #00eaff;
-  border-radius: 18px;
-  background: #08051e;
-  box-shadow: 0 0 20px #00cfff;
-}
-
-h1 {
-  text-align: center;
-  color: #00eaff;
-  margin-top: 0;
-}
-
-.subtitle {
-  text-align: center;
-  color: #ddd;
-  margin-bottom: 23px;
-}
-
-input, select {
-  width: 100%;
-  padding: 13px;
-  margin: 8px 0 14px;
-  border: 1px solid #914dff;
-  border-radius: 9px;
-  background: #10082b;
-  color: white;
-  font-size: 15px;
-  outline: none;
-}
-
-input::placeholder {
-  color: #bdb2d4;
-}
-
-select option {
-  background: #10082b;
-  color: white;
-}
-
-input:focus, select:focus {
-  border-color: #00eaff;
-  box-shadow: 0 0 8px #00cfff;
-}
-
-label {
-  display: block;
-  font-size: 14px;
-  color: #e4d9ff;
-}
-
-.password-wrap {
-  position: relative;
-}
-
-.password-wrap input {
-  padding-right: 75px;
-}
-
-.toggle {
-  position: absolute;
-  right: 8px;
-  top: 17px;
-  padding: 6px 9px;
-  background: transparent;
-  border: 1px solid #00eaff;
-  border-radius: 6px;
-  color: #00eaff;
-}
-
-.main-btn {
-  width: 100%;
-  padding: 14px;
-  border: 0;
-  border-radius: 9px;
-  background: linear-gradient(90deg,#00dfff,#9b28ff,#ff20b8);
-  color: white;
-  font-size: 17px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.main-btn:disabled {
-  opacity: .6;
-}
-
-.message {
-  text-align: center;
-  font-size: 14px;
-  margin-top: 14px;
-}
-
-.footer {
-  text-align: center;
-  margin-top: 20px;
-  font-size: 14px;
-}
-
-a {
-  color: #00eaff;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Student Registration | Nsukka Technical College</title>
+  <style>
+    *{box-sizing:border-box} body{margin:0;min-height:100vh;background:#071a35;color:#d9efff;font-family:Arial,sans-serif;display:grid;place-items:center;padding:22px}
+    .panel{width:min(100%,460px);background:#0d2a50;border:1px solid #258bd0;border-radius:16px;padding:25px;box-shadow:0 12px 35px #0005}
+    h1{margin:0 0 8px;color:#75caff;text-align:center;font-size:25px} p{color:#b9dfff;text-align:center}
+    label{display:block;margin:13px 0 6px} input,select{width:100%;padding:12px;border:1px solid #397eae;border-radius:8px;background:#061a33;color:white;font-size:16px}
+    button{width:100%;padding:13px;margin-top:18px;border:0;border-radius:8px;background:#42b4f5;color:#061a33;font-weight:bold;font-size:16px}
+    a{color:#75caff}.message{min-height:22px;text-align:center;margin-top:12px;color:#ffd38a}
+  </style>
 </head>
-
 <body>
-
-<div class="box">
-
-<h1>✦ VitalStar ✦</h1>
-
-<p class="subtitle">Create your student account</p>
-
-<form id="registerForm">
-
-<label>Full Name</label>
-<input
-  type="text"
-  id="fullName"
-  placeholder="Enter your full name"
-  maxlength="80"
-  autocomplete="name"
-  required
->
-
-<label>Username</label>
-<input
-  type="text"
-  id="username"
-  placeholder="Choose a username"
-  minlength="4"
-  maxlength="15"
-  autocomplete="username"
-  required
->
-
-<label>Email Address</label>
-<input
-  type="email"
-  id="email"
-  placeholder="Enter your email"
-  autocomplete="email"
-  required
->
-
-<label>Class</label>
-<select id="studentClass" required>
-  <option value="">Select your class</option>
-  <option value="SS1">SS1</option>
-  <option value="SS2">SS2</option>
-  <option value="SS3">SS3</option>
-</select>
-
-<label>Password</label>
-<div class="password-wrap">
-  <input
-    type="password"
-    id="password"
-    placeholder="Create a password"
-    minlength="6"
-    maxlength="15"
-    autocomplete="new-password"
-    required
-  >
-  <button type="button" class="toggle" id="togglePassword">
-    Show
-  </button>
-</div>
-
-<button type="submit" class="main-btn" id="registerBtn">
-  Create Account
-</button>
-
-<p class="message" id="message"></p>
-
-</form>
-
-<p class="footer">
-Already have an account?
-<a href="login.html">Login</a>
-</p>
-
-</div>
-
-<script type="module">
-
-import { auth, db } from "./firebase.js";
-
-import {
-  createUserWithEmailAndPassword,
-  deleteUser,
-  signOut
-} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
-
-import {
-  doc,
-  runTransaction,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
-
-
-const form = document.getElementById("registerForm");
-const button = document.getElementById("registerBtn");
-const message = document.getElementById("message");
-const passwordInput = document.getElementById("password");
-
-
-// SHOW / HIDE PASSWORD
-
-document.getElementById("togglePassword")
-.addEventListener("click", function() {
-
-  const show = passwordInput.type === "password";
-
-  passwordInput.type = show ? "text" : "password";
-
-  this.textContent = show ? "Hide" : "Show";
-
-});
-
-
-// REGISTRATION
-
-form.addEventListener("submit", async (event) => {
-
-  event.preventDefault();
-
-  const fullName = document.getElementById("fullName")
-    .value.trim();
-
-  const username = document.getElementById("username")
-    .value.trim().toLowerCase();
-
-  const email = document.getElementById("email")
-    .value.trim().toLowerCase();
-
-  const password = passwordInput.value;
-
-  const studentClass = document.getElementById("studentClass")
-    .value;
-
-
-  // VALIDATION
-
-  if (fullName.length < 2) {
-    message.textContent = "Enter your full name.";
-    return;
-  }
-
-  if (username.length < 4 || username.length > 15) {
-    message.textContent =
-      "Username must contain 4–15 characters.";
-    return;
-  }
-
-  if (!/^[a-zA-Z0-9._-]+$/.test(username)) {
-    message.textContent =
-      "Username can only contain letters, numbers, dots, underscores and hyphens.";
-    return;
-  }
-
-  if (password.length < 6 || password.length > 15) {
-    message.textContent =
-      "Password must contain 6–15 characters.";
-    return;
-  }
-
-  if (!["SS1", "SS2", "SS3"].includes(studentClass)) {
-    message.textContent = "Select a valid class.";
-    return;
-  }
-
-
-  button.disabled = true;
-  button.textContent = "Creating account...";
-  message.textContent = "";
-
-
-  let newUser = null;
-
-  try {
-
-    // CREATE FIREBASE AUTHENTICATION ACCOUNT
-
-    const credential = await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
-
-    newUser = credential.user;
-
-
-    // CREATE UNIQUE USERNAME AND STUDENT PROFILE
-
-    await runTransaction(db, async (transaction) => {
-
-      const usernameRef = doc(db, "usernames", username);
-
-      const profileRef = doc(db, "users", newUser.uid);
-
-      const usernameSnap = await transaction.get(usernameRef);
-
-      if (usernameSnap.exists()) {
-        throw new Error("USERNAME_ALREADY_EXISTS");
-      }
-
-      transaction.set(usernameRef, {
-        uid: newUser.uid,
-        createdAt: serverTimestamp()
-      });
-
-      transaction.set(profileRef, {
-        uid: newUser.uid,
-        fullName: fullName,
-        username: username,
-        email: email,
-        studentClass: studentClass,
-        createdAt: serverTimestamp()
-      });
-
-    });
-
-
-    // SUCCESS
-
-    message.style.color = "#00ff99";
-
-    message.textContent =
-      "Account created successfully!";
-
-    form.reset();
-
-    await signOut(auth);
-
-    setTimeout(() => {
-      window.location.href = "login.html";
-    }, 1800);
-
-
-  } catch (error) {
-
-    console.error("Registration error:", error);
-
-    // REMOVE AUTH ACCOUNT IF DATABASE REGISTRATION FAILED
-
-    if (newUser) {
-
+  <main class="panel">
+    <h1>Create Student Account</h1>
+    <p>Nsukka Technical College</p>
+    <form id="registerForm">
+      <label for="fullName">Full name</label><input id="fullName" required minlength="2" autocomplete="name">
+      <label for="username">Username (4–15 characters)</label><input id="username" required minlength="4" maxlength="15" pattern="[A-Za-z0-9._-]{4,15}" autocomplete="username">
+      <label for="email">Email address</label><input id="email" type="email" required autocomplete="email">
+      <label for="studentClass">Class</label>
+      <select id="studentClass" required>
+        <option value="">Choose class</option><option>SS1</option><option>SS2</option><option>SS3</option>
+      </select>
+      <label for="password">Password (6–15 characters)</label><input id="password" type="password" required minlength="6" maxlength="15" autocomplete="new-password">
+      <button id="submitButton" type="submit">Register</button>
+    </form>
+    <div class="message" id="message" role="status"></div>
+    <p>Already registered? <a href="login.html">Log in</a></p>
+  </main>
+  <script type="module">
+    import { auth, db, persistenceReady } from "./firebase.js";
+    import { createUserWithEmailAndPassword, deleteUser, signOut } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+    import { doc, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+    const form = document.getElementById("registerForm");
+    const message = document.getElementById("message");
+    const button = document.getElementById("submitButton");
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      message.textContent = "";
+      button.disabled = true;
+      let newUser = null;
       try {
-        await deleteUser(newUser);
-      } catch (cleanupError) {
-        console.error("Account cleanup error:", cleanupError);
+        await persistenceReady;
+        const fullName = document.getElementById("fullName").value.trim();
+        const username = document.getElementById("username").value.trim().toLowerCase();
+        const email = document.getElementById("email").value.trim().toLowerCase();
+        const studentClass = document.getElementById("studentClass").value;
+        const password = document.getElementById("password").value;
 
-        try {
-          await signOut(auth);
-        } catch (signOutError) {
-          console.error(signOutError);
+        if (!/^[a-z0-9._-]{4,15}$/.test(username)) throw new Error("Username must be 4–15 letters, numbers, dots, underscores or hyphens.");
+        if (password.length < 6 || password.length > 15) throw new Error("Password must be 6–15 characters.");
+        if (!["SS1","SS2","SS3"].includes(studentClass)) throw new Error("Choose SS1, SS2 or SS3.");
+
+        const credential = await createUserWithEmailAndPassword(auth, email, password);
+        newUser = credential.user;
+
+        await runTransaction(db, async (transaction) => {
+          const usernameRef = doc(db, "usernames", username);
+          const profileRef = doc(db, "users", newUser.uid);
+          const usernameSnap = await transaction.get(usernameRef);
+          if (usernameSnap.exists()) throw new Error("That username is already taken. Choose another one.");
+          transaction.set(usernameRef, { uid: newUser.uid, createdAt: serverTimestamp() });
+          transaction.set(profileRef, {
+            uid: newUser.uid, fullName, username, email, studentClass,
+            createdAt: serverTimestamp()
+          });
+        });
+
+        await signOut(auth);
+        window.location.href = "login.html?registered=1";
+      } catch (error) {
+        if (newUser) {
+          try { await deleteUser(newUser); } catch (_) {}
         }
+        message.textContent = error.code === "auth/email-already-in-use" ? "This email is already registered." :
+          error.code === "auth/weak-password" ? "Use a stronger password of at least 6 characters." :
+          error.code === "permission-denied" ? "Database rules are not published yet. Ask the site administrator to set them up." :
+          (error.message || "Registration failed. Please try again.");
+      } finally {
+        button.disabled = false;
       }
-
-    }
-
-    message.style.color = "#ff7777";
-
-    if (error.message === "USERNAME_ALREADY_EXISTS") {
-
-      message.textContent =
-        "This username is already taken.";
-
-    } else if (error.code === "auth/email-already-in-use") {
-
-      message.textContent =
-        "This email already has an account.";
-
-    } else if (error.code === "auth/invalid-email") {
-
-      message.textContent =
-        "Please enter a valid email address.";
-
-    } else if (error.code === "auth/weak-password") {
-
-      message.textContent =
-        "Password must contain at least 6 characters.";
-
-    } else if (
-      error.code === "permission-denied" ||
-      error.code === "firestore/permission-denied"
-    ) {
-
-      message.textContent =
-        "Database access is not configured yet. Please try again later.";
-
-    } else {
-
-      message.textContent =
-        error.message || "Registration failed. Please try again.";
-
-    }
-
-  } finally {
-
-    button.disabled = false;
-    button.textContent = "Create Account";
-
-  }
-
-});
-
-</script>
-
+    });
+  </script>
 </body>
 </html>
