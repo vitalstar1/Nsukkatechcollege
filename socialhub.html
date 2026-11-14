@@ -1,108 +1,95 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>School Social Hub</title>
-
 <style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    background: #06152e;
-    font-family: Arial, sans-serif;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-}
-
-.container {
-    width: 100%;
-    max-width: 420px;
-    text-align: center;
-}
-
-h1 {
-    color: #38bdf8;
-    font-size: 28px;
-    margin-bottom: 12px;
-}
-
-.subtitle {
-    color: #87cefa;
-    font-size: 14px;
-    margin-bottom: 30px;
-}
-
-.buttons {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-}
-
-.class-btn {
-    background: #10294b;
-    border: 1px solid #38bdf8;
-    border-radius: 12px;
-    padding: 22px 10px;
-    color: #38bdf8;
-    font-size: 18px;
-    font-weight: bold;
-    text-decoration: none;
-    display: block;
-}
-
-footer {
-    color: #6daed0;
-    font-size: 12px;
-    margin-top: 35px;
-}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#06152e;font-family:Arial,sans-serif;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px}
+.container{width:100%;max-width:420px;text-align:center}
+h1{color:#38bdf8;font-size:28px;margin-bottom:12px}
+.subtitle{color:#87cefa;font-size:14px;margin-bottom:24px}
+.account-area{background:#10294b;border:1px solid #24527c;border-radius:12px;padding:15px;margin-bottom:22px;color:#d9efff}
+.auth-links{display:flex;gap:10px;justify-content:center}
+.auth-links a,.logout-btn{background:#0b3a60;border:1px solid #38bdf8;border-radius:8px;padding:10px 15px;color:#38bdf8;text-decoration:none;font-weight:bold;font-size:14px}
+.student-name{color:#7dd3fc;font-weight:bold;margin-bottom:6px}
+.student-email{color:#c4e6fb;font-size:13px;overflow-wrap:anywhere;margin-bottom:12px}
+.logout-btn{cursor:pointer}
+.buttons{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}
+.class-btn{background:#10294b;border:1px solid #38bdf8;border-radius:12px;padding:22px 10px;color:#38bdf8;font-size:18px;font-weight:bold;text-decoration:none;display:block}
+footer{color:#6daed0;font-size:12px;margin-top:35px}
+.status{color:#87cefa;font-size:13px;margin-bottom:12px}
 </style>
 </head>
-
 <body>
-
 <div class="container">
-
     <h1>School Social Hub</h1>
+    <p class="subtitle">Choose your community</p>
 
-    <p class="subtitle">
-        Choose your community
-    </p>
+    <section class="account-area" id="accountArea" aria-live="polite">
+        <p class="status">Checking account...</p>
+    </section>
 
     <div class="buttons">
-
-        <a href="general.html" class="class-btn">
-            GENERAL
-        </a>
-
-        <a href="ss1.html" class="class-btn">
-            SS 1
-        </a>
-
-        <a href="ss2.html" class="class-btn">
-            SS 2
-        </a>
-
-        <a href="ss3.html" class="class-btn">
-            SS 3
-        </a>
-
+        <a href="general.html" class="class-btn">GENERAL</a>
     </div>
 
-    <footer>
-        © 2026 School Social Hub
-    </footer>
-
+    <footer>© 2026 School Social Hub</footer>
 </div>
 
+<script type="module">
+import { auth, db, persistenceReady } from "./firebase.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+const accountArea = document.getElementById("accountArea");
+
+function showLoggedOut() {
+  accountArea.innerHTML = `
+    <div class="auth-links">
+      <a href="login.html">Login</a>
+      <a href="register.html">Register</a>
+    </div>`;
+}
+
+await persistenceReady;
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    showLoggedOut();
+    return;
+  }
+
+  accountArea.innerHTML = `<p class="status">Loading your account...</p>`;
+
+  let displayName = "Student";
+  try {
+    const profileSnap = await getDoc(doc(db, "users", user.uid));
+    if (profileSnap.exists()) {
+      displayName = profileSnap.data().fullName || "Student";
+    }
+  } catch (error) {
+    console.error("Could not load student profile:", error);
+  }
+
+  accountArea.innerHTML = `
+    <div class="student-name"></div>
+    <div class="student-email"></div>
+    <button class="logout-btn" type="button">Log out</button>`;
+
+  accountArea.querySelector(".student-name").textContent = displayName;
+  accountArea.querySelector(".student-email").textContent = user.email || "";
+
+  accountArea.querySelector(".logout-btn").addEventListener("click", async () => {
+    try {
+      await signOut(auth);
+      showLoggedOut();
+    } catch (error) {
+      alert("Could not log out. Please try again.");
+    }
+  });
+});
+</script>
 </body>
 </html>
