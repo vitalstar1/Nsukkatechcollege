@@ -1,91 +1,317 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Student Registration | Nsukka Technical College</title>
+
   <style>
-    *{box-sizing:border-box} body{margin:0;min-height:100vh;background:#071a35;color:#d9efff;font-family:Arial,sans-serif;display:grid;place-items:center;padding:22px}
-    .panel{width:min(100%,460px);background:#0d2a50;border:1px solid #258bd0;border-radius:16px;padding:25px;box-shadow:0 12px 35px #0005}
-    h1{margin:0 0 8px;color:#75caff;text-align:center;font-size:25px} p{color:#b9dfff;text-align:center}
-    label{display:block;margin:13px 0 6px} input,select{width:100%;padding:12px;border:1px solid #397eae;border-radius:8px;background:#061a33;color:white;font-size:16px}
-    button{width:100%;padding:13px;margin-top:18px;border:0;border-radius:8px;background:#42b4f5;color:#061a33;font-weight:bold;font-size:16px}
-    a{color:#75caff}.message{min-height:22px;text-align:center;margin-top:12px;color:#ffd38a}
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      min-height:100vh;
+      background:#071a35;
+      color:#d9efff;
+      font-family:Arial,sans-serif;
+      display:grid;
+      place-items:center;
+      padding:22px
+    }
+
+    .panel{
+      width:min(100%,460px);
+      background:#0d2a50;
+      border:1px solid #258bd0;
+      border-radius:16px;
+      padding:25px;
+      box-shadow:0 12px 35px #0005
+    }
+
+    h1{
+      margin:0 0 8px;
+      color:#75caff;
+      text-align:center;
+      font-size:25px
+    }
+
+    p{color:#b9dfff;text-align:center}
+
+    label{display:block;margin:13px 0 6px}
+
+    input,select{
+      width:100%;
+      padding:12px;
+      border:1px solid #397eae;
+      border-radius:8px;
+      background:#061a33;
+      color:white;
+      font-size:16px
+    }
+
+    button{
+      width:100%;
+      padding:13px;
+      margin-top:18px;
+      border:0;
+      border-radius:8px;
+      background:#42b4f5;
+      color:#061a33;
+      font-weight:bold;
+      font-size:16px;
+      cursor:pointer
+    }
+
+    button:disabled{
+      opacity:.6;
+      cursor:not-allowed
+    }
+
+    a{color:#75caff}
+
+    .message{
+      min-height:22px;
+      text-align:center;
+      margin-top:12px;
+      color:#ffd38a
+    }
+
+    .success{color:#75e6a5}
+
+    .password-option{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin-top:10px;
+      font-size:14px;
+      color:#b9dfff
+    }
+
+    .password-option input{
+      width:auto;
+      accent-color:#42b4f5
+    }
+
+    .loading{
+      display:none;
+      text-align:center;
+      margin-top:16px;
+      color:#75caff
+    }
+
+    .spinner{
+      width:25px;
+      height:25px;
+      border:3px solid #397eae;
+      border-top-color:#75caff;
+      border-radius:50%;
+      animation:spin .8s linear infinite;
+      margin:0 auto 8px
+    }
+
+    @keyframes spin{
+      to{transform:rotate(360deg)}
+    }
   </style>
 </head>
+
 <body>
   <main class="panel">
+
     <h1>Create Student Account</h1>
     <p>Nsukka Technical College</p>
+
     <form id="registerForm">
-      <label for="fullName">Full name</label><input id="fullName" required minlength="2" autocomplete="name">
-      <label for="username">Username (4–15 characters)</label><input id="username" required minlength="4" maxlength="15" pattern="[A-Za-z0-9._-]{4,15}" autocomplete="username">
-      <label for="email">Email address</label><input id="email" type="email" required autocomplete="email">
+
+      <label for="fullName">Full name</label>
+      <input id="fullName" required minlength="2" autocomplete="name">
+
+      <label for="username">Username (4–15 characters)</label>
+      <input
+        id="username"
+        required
+        minlength="4"
+        maxlength="15"
+        pattern="[A-Za-z0-9._-]{4,15}"
+        autocomplete="username"
+      >
+
+      <label for="email">Email address</label>
+      <input id="email" type="email" required autocomplete="email">
+
       <label for="studentClass">Class</label>
       <select id="studentClass" required>
-        <option value="">Choose class</option><option>SS1</option><option>SS2</option><option>SS3</option>
+        <option value="">Choose class</option>
+        <option>SS1</option>
+        <option>SS2</option>
+        <option>SS3</option>
       </select>
-      <label for="password">Password (6–15 characters)</label><input id="password" type="password" required minlength="6" maxlength="15" autocomplete="new-password">
-      <button id="submitButton" type="submit">Register</button>
+
+      <label for="password">Password (6–15 characters)</label>
+      <input
+        id="password"
+        type="password"
+        required
+        minlength="6"
+        maxlength="15"
+        autocomplete="new-password"
+      >
+
+      <label class="password-option">
+        <input type="checkbox" id="showPassword">
+        Show password
+      </label>
+
+      <button id="submitButton" type="submit">
+        Register
+      </button>
+
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+        Creating your account...
+      </div>
+
     </form>
+
     <div class="message" id="message" role="status"></div>
+
     <p>Already registered? <a href="login.html">Log in</a></p>
+
   </main>
+
   <script type="module">
+
     import { auth, db, persistenceReady } from "./firebase.js";
-    import { createUserWithEmailAndPassword, deleteUser, signOut } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
-    import { doc, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+    import {
+      createUserWithEmailAndPassword,
+      deleteUser,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+    import {
+      doc,
+      runTransaction,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
     const form = document.getElementById("registerForm");
     const message = document.getElementById("message");
     const button = document.getElementById("submitButton");
+    const loading = document.getElementById("loading");
+    const password = document.getElementById("password");
+    const showPassword = document.getElementById("showPassword");
+
+    // Show or hide password
+    showPassword.addEventListener("change", () => {
+      password.type = showPassword.checked ? "text" : "password";
+    });
 
     form.addEventListener("submit", async (event) => {
+
       event.preventDefault();
+
       message.textContent = "";
+      message.className = "message";
+
       button.disabled = true;
+      button.textContent = "Creating Account...";
+      loading.style.display = "block";
+
       let newUser = null;
+
       try {
+
         await persistenceReady;
+
         const fullName = document.getElementById("fullName").value.trim();
         const username = document.getElementById("username").value.trim().toLowerCase();
         const email = document.getElementById("email").value.trim().toLowerCase();
         const studentClass = document.getElementById("studentClass").value;
-        const password = document.getElementById("password").value;
+        const passwordValue = password.value;
 
-        if (!/^[a-z0-9._-]{4,15}$/.test(username)) throw new Error("Username must be 4–15 letters, numbers, dots, underscores or hyphens.");
-        if (password.length < 6 || password.length > 15) throw new Error("Password must be 6–15 characters.");
-        if (!["SS1","SS2","SS3"].includes(studentClass)) throw new Error("Choose SS1, SS2 or SS3.");
+        if (!/^[a-z0-9._-]{4,15}$/.test(username)) {
+          throw new Error("Username must be 4–15 letters, numbers, dots, underscores or hyphens.");
+        }
 
-        const credential = await createUserWithEmailAndPassword(auth, email, password);
+        if (passwordValue.length < 6 || passwordValue.length > 15) {
+          throw new Error("Password must be 6–15 characters.");
+        }
+
+        if (!["SS1","SS2","SS3"].includes(studentClass)) {
+          throw new Error("Choose SS1, SS2 or SS3.");
+        }
+
+        const credential = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          passwordValue
+        );
+
         newUser = credential.user;
 
         await runTransaction(db, async (transaction) => {
+
           const usernameRef = doc(db, "usernames", username);
           const profileRef = doc(db, "users", newUser.uid);
+
           const usernameSnap = await transaction.get(usernameRef);
-          if (usernameSnap.exists()) throw new Error("That username is already taken. Choose another one.");
-          transaction.set(usernameRef, { uid: newUser.uid, createdAt: serverTimestamp() });
-          transaction.set(profileRef, {
-            uid: newUser.uid, fullName, username, email, studentClass,
+
+          if (usernameSnap.exists()) {
+            throw new Error("That username is already taken. Choose another one.");
+          }
+
+          transaction.set(usernameRef, {
+            uid: newUser.uid,
             createdAt: serverTimestamp()
           });
+
+          transaction.set(profileRef, {
+            uid: newUser.uid,
+            fullName,
+            username,
+            email,
+            studentClass,
+            createdAt: serverTimestamp()
+          });
+
         });
 
         await signOut(auth);
+
+        message.textContent = "Account created successfully! Redirecting to login...";
+        message.className = "message success";
+
         window.location.href = "login.html?registered=1";
+
       } catch (error) {
+
         if (newUser) {
-          try { await deleteUser(newUser); } catch (_) {}
+          try {
+            await deleteUser(newUser);
+          } catch (_) {}
         }
-        message.textContent = error.code === "auth/email-already-in-use" ? "This email is already registered." :
-          error.code === "auth/weak-password" ? "Use a stronger password of at least 6 characters." :
-          error.code === "permission-denied" ? "Database rules are not published yet. Ask the site administrator to set them up." :
-          (error.message || "Registration failed. Please try again.");
+
+        message.textContent =
+          error.code === "auth/email-already-in-use"
+            ? "This email is already registered."
+            : error.code === "auth/weak-password"
+            ? "Use a stronger password of at least 6 characters."
+            : error.code === "permission-denied"
+            ? "Database rules are not published yet. Ask the site administrator to set them up."
+            : (error.message || "Registration failed. Please try again.");
+
       } finally {
+
         button.disabled = false;
+        button.textContent = "Register";
+        loading.style.display = "none";
+
       }
+
     });
+
   </script>
 </body>
 </html>
