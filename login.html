@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Student Login | Nsukka Technical College</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:#071a35;color:#d9efff;font-family:Arial,sans-serif;display:grid;place-items:center;padding:22px}
+    .panel{width:min(100%,420px);background:#0d2a50;border:1px solid #258bd0;border-radius:16px;padding:26px;box-shadow:0 12px 35px #0005}
+    h1{color:#75caff;text-align:center;margin:0 0 8px}p{text-align:center;color:#b9dfff}
+    label{display:block;margin:15px 0 6px}input{width:100%;padding:12px;border:1px solid #397eae;border-radius:8px;background:#061a33;color:white;font-size:16px}
+    button{width:100%;padding:13px;margin-top:18px;border:0;border-radius:8px;background:#42b4f5;color:#061a33;font-weight:bold;font-size:16px}
+    a{color:#75caff}.message{text-align:center;min-height:22px;margin-top:12px;color:#ffd38a}
+  </style>
+</head>
+<body>
+  <main class="panel">
+    <h1>Student Login</h1><p>Nsukka Technical College</p>
+    <form id="loginForm">
+      <label for="email">Email address</label><input id="email" type="email" required autocomplete="username">
+      <label for="password">Password</label><input id="password" type="password" required autocomplete="current-password">
+      <button id="loginButton" type="submit">Log in</button>
+    </form>
+    <div class="message" id="message" role="status"></div>
+    <p>New student? <a href="register.html">Create an account</a></p>
+  </main>
+  <script type="module">
+    import { auth, persistenceReady } from "./firebase.js";
+    import { signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+    const form = document.getElementById("loginForm");
+    const message = document.getElementById("message");
+    const button = document.getElementById("loginButton");
+
+    await persistenceReady;
+    onAuthStateChanged(auth, (user) => {
+      if (user) window.location.replace("home.html");
+    });
+
+    if (new URLSearchParams(location.search).get("registered") === "1") {
+      message.textContent = "Registration successful. You can now log in.";
+    }
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      message.textContent = "";
+      button.disabled = true;
+      try {
+        await signInWithEmailAndPassword(
+          auth,
+          document.getElementById("email").value.trim().toLowerCase(),
+          document.getElementById("password").value
+        );
+        window.location.href = "home.html";
+      } catch (error) {
+        message.textContent = error.code === "auth/invalid-credential" || error.code === "auth/user-not-found" ?
+          "Incorrect email or password." : (error.message || "Login failed. Please try again.");
+      } finally { button.disabled = false; }
+    });
+  </script>
+</body>
+</html>
