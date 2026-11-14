@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Student Home | Nsukka Technical College</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:#071a35;color:#d9efff;font-family:Arial,sans-serif;padding:24px}
+    header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:1px solid #258bd0;padding-bottom:15px}
+    h1{color:#75caff;margin:0;font-size:24px}button{padding:10px 16px;border:0;border-radius:8px;background:#42b4f5;color:#061a33;font-weight:bold}
+    main{max-width:760px;margin:40px auto;background:#0d2a50;border:1px solid #258bd0;border-radius:16px;padding:25px}
+    .info{padding:12px 0;border-bottom:1px solid #24527c}.muted{color:#a9cce8}
+  </style>
+</head>
+<body>
+  <header><h1>Nsukka Technical College</h1><button id="logoutButton">Log out</button></header>
+  <main>
+    <h2>Welcome, <span id="studentName">Student</span>!</h2>
+    <p class="muted">You are signed in. Your session will remain active on this browser until you log out.</p>
+    <div class="info">Username: <strong id="username">Loading…</strong></div>
+    <div class="info">Class: <strong id="studentClass">Loading…</strong></div>
+    <div class="info">Email: <strong id="email">Loading…</strong></div>
+    <p id="message" class="muted"></p>
+  </main>
+  <script type="module">
+    import { auth, db, persistenceReady } from "./firebase.js";
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+    await persistenceReady;
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) { window.location.replace("login.html"); return; }
+      document.getElementById("email").textContent = user.email || "";
+      try {
+        const profile = await getDoc(doc(db, "users", user.uid));
+        if (profile.exists()) {
+          const data = profile.data();
+          document.getElementById("studentName").textContent = data.fullName || "Student";
+          document.getElementById("username").textContent = data.username || "";
+          document.getElementById("studentClass").textContent = data.studentClass || "";
+        } else {
+          document.getElementById("message").textContent = "Your profile could not be found.";
+        }
+      } catch (error) {
+        document.getElementById("message").textContent = "Could not load your profile. Check that Firestore rules are configured.";
+      }
+    });
+    document.getElementById("logoutButton").addEventListener("click", async () => {
+      await signOut(auth);
+      window.location.replace("login.html");
+    });
+  </script>
+</body>
+</html>
