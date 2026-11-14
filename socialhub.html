@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>School Social Hub</title>
 
 <style>
@@ -105,12 +105,11 @@ h1 {
     font-weight: bold;
     text-decoration: none;
     display: block;
-    transition: 0.2s;
 }
 
 .class-btn:active {
     background: #16416d;
-    transform: scale(0.97);
+    transform: scale(.97);
 }
 
 footer {
@@ -123,6 +122,20 @@ footer {
     color: #87cefa;
     font-size: 13px;
 }
+
+.spinner {
+    width: 25px;
+    height: 25px;
+    border: 3px solid #24527c;
+    border-top-color: #38bdf8;
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+    margin: 0 auto 10px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
 </style>
 </head>
 
@@ -131,37 +144,23 @@ footer {
 <div class="container">
 
     <h1>School Social Hub</h1>
-
     <p class="subtitle">Choose your community</p>
 
     <section class="account-area" id="accountArea">
+        <div class="spinner"></div>
         <p class="status">Checking account...</p>
     </section>
 
-    <!-- Only visible when a student is logged in -->
     <div class="buttons" id="communityButtons">
 
-        <a href="general.html" class="class-btn">
-            GENERAL
-        </a>
-
-        <a href="ss1.html" class="class-btn">
-            SS1
-        </a>
-
-        <a href="ss2.html" class="class-btn">
-            SS2
-        </a>
-
-        <a href="ss3.html" class="class-btn">
-            SS3
-        </a>
+        <a href="general.html" class="class-btn">GENERAL</a>
+        <a href="ss1.html" class="class-btn">SS1</a>
+        <a href="ss2.html" class="class-btn">SS2</a>
+        <a href="ss3.html" class="class-btn">SS3</a>
 
     </div>
 
-    <footer>
-        © 2026 School Social Hub
-    </footer>
+    <footer>© 2026 School Social Hub</footer>
 
 </div>
 
@@ -183,7 +182,6 @@ const accountArea = document.getElementById("accountArea");
 const communityButtons = document.getElementById("communityButtons");
 
 function showLoggedOut() {
-
     communityButtons.classList.remove("visible");
 
     accountArea.innerHTML = `
@@ -194,83 +192,84 @@ function showLoggedOut() {
     `;
 }
 
+function showError(message) {
+    communityButtons.classList.remove("visible");
+
+    accountArea.innerHTML = `
+        <p class="status">${message}</p>
+        <a href="login.html">Return to Login</a>
+    `;
+}
+
+async function displayStudent(user) {
+
+    communityButtons.classList.remove("visible");
+
+    accountArea.innerHTML = `
+        <div class="spinner"></div>
+        <p class="status">Loading your account...</p>
+    `;
+
+    let displayName = "Student";
+
+    try {
+        const profileSnap = await getDoc(
+            doc(db, "users", user.uid)
+        );
+
+        if (profileSnap.exists()) {
+            displayName = profileSnap.data().fullName || "Student";
+        }
+
+    } catch (error) {
+        console.error("Profile error:", error);
+    }
+
+    accountArea.innerHTML = `
+        <div class="student-name"></div>
+        <div class="student-email"></div>
+        <button class="logout-btn" type="button">Log out</button>
+    `;
+
+    accountArea.querySelector(".student-name").textContent = displayName;
+    accountArea.querySelector(".student-email").textContent = user.email || "";
+
+    communityButtons.classList.add("visible");
+
+    accountArea.querySelector(".logout-btn").addEventListener("click", async () => {
+        try {
+            await signOut(auth);
+        } catch (error) {
+            alert("Could not log out. Please try again.");
+        }
+    });
+}
+
 try {
 
     await persistenceReady;
 
-    onAuthStateChanged(auth, async (user) => {
+    onAuthStateChanged(auth, (user) => {
 
         if (!user) {
             showLoggedOut();
             return;
         }
 
-        communityButtons.classList.remove("visible");
+        displayStudent(user).catch(error => {
+            console.error("Account loading error:", error);
+            showError("Unable to load your account. Please refresh.");
+        });
 
-        accountArea.innerHTML = `
-            <p class="status">Loading your account...</p>
-        `;
-
-        let displayName = "Student";
-
-        try {
-
-            const profileSnap = await getDoc(
-                doc(db, "users", user.uid)
-            );
-
-            if (profileSnap.exists()) {
-                displayName =
-                    profileSnap.data().fullName || "Student";
-            }
-
-        } catch (error) {
-            console.error("Profile error:", error);
-        }
-
-        accountArea.innerHTML = `
-            <div class="student-name"></div>
-            <div class="student-email"></div>
-            <button class="logout-btn" type="button">
-                Log out
-            </button>
-        `;
-
-        accountArea.querySelector(".student-name").textContent =
-            displayName;
-
-        accountArea.querySelector(".student-email").textContent =
-            user.email || "";
-
-        communityButtons.classList.add("visible");
-
-        accountArea.querySelector(".logout-btn")
-            .addEventListener("click", async () => {
-
-                try {
-                    await signOut(auth);
-                    showLoggedOut();
-                } catch (error) {
-                    alert("Could not log out. Please try again.");
-                }
-
-            });
-
+    }, (error) => {
+        console.error("Authentication error:", error);
+        showError("Unable to check your login. Please refresh.");
     });
 
 } catch (error) {
 
     console.error("Firebase error:", error);
-
-    accountArea.innerHTML = `
-        <p class="status">
-            Unable to connect. Please refresh the page.
-        </p>
-        <div class="auth-links">
-            <a href="login.html">Login</a>
-            <a href="register.html">Register</a>
-        </div>
-    `;
+    showError("Firebase connection failed. Check your connection and refresh.");
 
 }
 
