@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "vitalstar2"
-  }
+  },
+  "targets": {
+    "vitalstar2": {
+      "hosting": {
+        "live": [
+          "nsukkatechcollege"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
